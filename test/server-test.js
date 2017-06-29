@@ -87,6 +87,8 @@ describe('Server', function(){
             })
       })
     })
+
+    desc
   })
 
 })
