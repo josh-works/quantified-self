@@ -1,10 +1,8 @@
+var pry = require('pryjs')
 var assert = require('chai').assert
 var app = require('../server')
 var request = require('request')
-
-const environment = process.env.NODE_ENV || 'development';
-const configuration = require('../knexfile')[environment];
-const database = require('knex')(configuration);
+var Foods = require('../lib/models/food')
 
 
 describe('Server', function(){
@@ -29,16 +27,23 @@ describe('Server', function(){
 
   context('/api/v1', function(){
     describe('GET /foods', function () {
-      beforeEach(function(){
-        // do stuff here later
+
+      beforeEach(function(done){
+        Foods.createFoods("pizza", 155).then(function () { done() });
       })
 
+      afterEach(function(done){
+        Foods.resetFoods().then(function () { done() })
+      })
 
       it('should return list of foods', function (done) {
         this.request.get('/api/v1/foods', function (error, response) {
           if (error) {done(error)}
+          var parsedFood = JSON.parse(response.body)
+
           assert.equal(response.statusCode, 200)
-          assert.include(response.body, JSON.stringify(app.locals.foods))
+          assert.include(parsedFood[0].name, "pizza")
+          assert.equal(parsedFood.length, 1)
           done()
         })
       })
@@ -46,13 +51,11 @@ describe('Server', function(){
 
     describe('GET /foods/:id', function () {
       beforeEach(function(done){
-        database.raw(`INSERT INTO foods (name, calories, created_at) VALUES (?, ?, ?)`,
-          ["bananana", 100, new Date]).then(function () { done() });
+        Foods.createFoods("pizza", 155).then(function () { done() });
       })
 
       afterEach(function(done){
-        database.raw(`TRUNCATE foods RESTART IDENTITY`)
-        .then(function () { done() })
+        Foods.resetFoods().then(function () { done() })
       })
 
       it('should return 404 if resource is not found', function (done) {
@@ -61,6 +64,27 @@ describe('Server', function(){
           assert.equal(response.statusCode, 404)
           done();
         })
+      })
+
+      it('should return id, name, calorie, created_at', function (done) {
+          var myRequest = this.request
+          Foods.findFirst().then(function (data) {
+              var id = data.rows[0].id
+              var name = data.rows[0].name
+              var calories = data.rows[0].calories
+              var created_at = data.rows[0].created_at
+              myRequest.get('/api/v1/foods/' + id, function(error, response){
+                if (error) { done(error) }
+
+                var parsedFood = JSON.parse(response.body)
+                assert.equal(parsedFood.id, id)
+                assert.equal(parsedFood.name, name)
+                assert.equal(parsedFood.calories, calories)
+                assert.ok(parsedFood.created_at)
+                done()
+              })
+
+            })
       })
     })
   })
