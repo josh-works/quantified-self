@@ -6,11 +6,15 @@ var Foods = require('./lib/models/food')
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Quantified Self'
 
-
+//GET foods
 app.get('/api/v1/foods', function(request, response) {
   Foods.findAll().then(function (data) {
     response.json(data.rows)
   })
+})
+// POST foods
+app.post('/api/v1/foods', function(request, response){
+  console.log(request);
 })
 
 app.get('/api/v1/foods/:id', function (request, response) {

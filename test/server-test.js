@@ -88,7 +88,23 @@ describe('Server', function(){
       })
     })
 
-    desc
+    describe("POST /foods", function(){
+      beforeEach(function(done){
+        Foods.createFoods("pizza", 155).then(function () { done() });
+      })
+
+      afterEach(function(done){
+        Foods.resetFoods().then(function () { done() })
+      })
+
+      it("can create a new food object with properties", function(done){
+        var params = {name: "banana", calories: 50}
+        this.request.post("/api/v1/foods", {form: params}, function(error, response){
+          if(error) {done(error)}
+          assert.equal(response.statusCode, 200)
+        })
+      })
+    })
   })
 
 })
