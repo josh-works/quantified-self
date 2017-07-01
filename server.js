@@ -23,13 +23,18 @@ app.post('/api/v1/foods', function(request, response) {
   // eval(pry.it)
   // console.log(name);
   // console.log(calories);
-  Foods.createFoods(name, calories)
-  .then(function(data){
-    response.status(201).json({
-          status: 'success',
-          message: 'Inserted one food'
-        })
-  })
+
+  if (name && calories){
+    Foods.createFoods(name, calories)
+    .then(function(data){
+      response.status(201).json({
+            status: 'success',
+            message: 'Inserted one food'
+          })
+    })
+  }else {
+    return response.status(422).json({error: "You must have both name and calories"})
+  }
 })
 
 app.get('/api/v1/foods/:id', function (request, response) {

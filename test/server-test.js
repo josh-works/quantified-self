@@ -111,6 +111,17 @@ describe('Server', function(){
           done()
         })
       })
+
+      it("cannot create without both name and calories", function(done){
+        var food = {name: "banana"}
+        this.request.post('/api/v1/foods', {form: food}, function(error, response){
+          if(error) {done(error)}
+
+          var parsedFood = JSON.parse(response.body)
+          assert.equal(response.statusCode, 422)
+          done()
+        })
+      })
     })
   })
 
