@@ -123,6 +123,30 @@ describe('Server', function(){
         })
       })
     })
+
+    describe("PUT /foods/:id", function(){
+
+      beforeEach(function(done){
+        Foods.createFoods("pizza", 155).then(function () { done() });
+      })
+
+      afterEach(function(done){
+        Foods.resetFoods().then(function () { done() })
+      })
+
+      it("can update existing food", function(done){
+        var food = {name: "cheese pizza"}
+
+        this.request.put("api/v1/foods/1", {form: food}, function(error, response){
+          if (error) {done(error)}
+          console.log("THIS IS A LOG");
+          // var parsedFood = JSON.parse(response.body)
+          // assert.equal(response.statusCode, 202)
+          // assert.equal(parsedFood.name, food.name)
+          done()
+        })
+      })
+    })
   })
 
 })
