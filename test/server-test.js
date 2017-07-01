@@ -89,6 +89,7 @@ describe('Server', function(){
     })
 
     describe("POST /foods", function(){
+
       beforeEach(function(done){
         Foods.createFoods("pizza", 155).then(function () { done() });
       })
@@ -98,10 +99,16 @@ describe('Server', function(){
       })
 
       it("can create a new food object with properties", function(done){
-        var params = {name: "banana", calories: 50}
-        this.request.post("/api/v1/foods", {form: params}, function(error, response){
+        var food = {name: "banana", calories: 50}
+        this.request.post('/api/v1/foods', {form: food}, function(error, response){
+          // console.log(response.body)
           if(error) {done(error)}
-          assert.equal(response.statusCode, 200)
+          var parsedFood = JSON.parse(response.body)
+          assert.equal(response.statusCode, 201)
+          // assert.equal(Foods.countFoods(), 2)
+          assert.equal(parsedFood.status, "success")
+          assert.equal(parsedFood.message, 'Inserted one food')
+          done()
         })
       })
     })
