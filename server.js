@@ -51,11 +51,26 @@ app.get('/api/v1/foods/:id', function (request, response) {
 app.put('/api/v1/foods/:id', function (request, response){
   var id = request.params.id
   var name = request.body.name
+  var calories = request.body.calories
   // var calories = request.body.calories
-
-  Foods.update(id, name).then(function (data){
-    return response.sendStatus(202)
+  Foods.find(id).then(function(data){
+    if (data.rowCount == 0) {return response.sendStatus(404)}
+    Foods.update(id, name, calories).then(function (data){
+      return response.sendStatus(202)
+    })
   })
+
+  app.delete('/api/v1/foods/:id', function (request, response){
+    var id = request.params.id
+
+    Foods.find(id).then(function(data){
+      if (data.rowCount ==0) {return response.sendStatus(404)}
+      Foods.destroy(id).then(function(data){
+        return response.sendStatus(200)
+      })
+    })
+  })
+
 })
 
 if(!module.parent) {

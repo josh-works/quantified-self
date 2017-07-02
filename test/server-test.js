@@ -125,7 +125,7 @@ describe('Server', function(){
     })
 
     describe("PUT /foods/:id", function(){
-
+      this.timeout(1000000)
       beforeEach(function(done){
         Foods.createFoods("pizza", 155).then(function () { done() });
       })
@@ -134,7 +134,16 @@ describe('Server', function(){
         Foods.resetFoods().then(function () { done() })
       })
 
-      it("can update existing food", function(done){
+      it('should return 404 if food is not found', function (done) {
+        var food = {name: "cheese pizza"}
+        this.request.get('/api/v1/foods/10000', {food: food}, function (error, response) {
+          if (error) { done(error) }
+          assert.equal(response.statusCode, 404)
+          done();
+        })
+      })
+
+      it("can update existing food's name", function(done){
         var myRequest = this.request
         var food = {name: "cheese pizza"}
         Foods.find(1).then(function(data){
@@ -155,6 +164,47 @@ describe('Server', function(){
         })
       })
     })
+  })
+
+  describe("DELETE /foods/:id", function(){
+    // this.timeout(1000000)
+    beforeEach(function(done){
+      Foods.createFoods("pizza", 155).then(function () { done() });
+    })
+
+    afterEach(function(done){
+      Foods.resetFoods().then(function () { done() })
+    })
+
+    it("should return 404 if food not found", function(done){
+      this.request.delete('/api/v1/foods/1000', function(error, response){
+        if(error){done(error)}
+        assert.equal(response.statusCode, 404)
+        done()
+      })
+    })
+
+    it("should delete the food from the database", function(done){
+      var myRequest = this.request
+        Foods.findAll().then(function(data){
+          var countBefore = data.rowCount
+
+          myRequest.delete('/api/v1/foods/1', function(error, response){
+            if(error){done(error)}
+
+            assert.equal(response.statusCode, 200)
+
+            Foods.findAll().then(function(data){
+              var countAfter = data.rowCount
+
+              assert.equal(countAfter, 0)
+              done()
+            })
+          })
+
+        })
+      })
+
   })
 
 })
