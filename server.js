@@ -48,11 +48,13 @@ app.get('/api/v1/foods/:id', function (request, response) {
 })
 
 // PUT foods/:id
-app.put('/api/vi/foods/:id', function (request, response){
-  console.log(request.body);
+app.put('/api/v1/foods/:id', function (request, response){
   var id = request.params.id
-  Foods.update(id).then(function (data){
-    console.log("We made it! ")
+  var name = request.body.name
+  // var calories = request.body.calories
+
+  Foods.update(id, name).then(function (data){
+    return response.sendStatus(202)
   })
 })
 

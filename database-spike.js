@@ -26,8 +26,17 @@ const database = require('knex')(configuration);
 //   });
 // });
 
- database.raw("SELECT * FROM foods;").then(function(data){
-   console.log("this is the count:" + data.rowCount);
-  process.exit();
+//  database.raw("SELECT * FROM foods;").then(function(data){
+//    console.log("this is the count:" + data.rowCount);
+//   process.exit();
+//
+// })
 
+database.raw(`UPDATE foods SET name = ? WHERE id = ?;`, ["coffee", 3] )
+  .then( function () {
+    database.raw('SELECT * FROM foods')
+    .then( function(data) {
+      console.log(data.rows)
+      process.exit();
+    });
 })

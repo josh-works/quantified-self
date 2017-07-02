@@ -135,15 +135,23 @@ describe('Server', function(){
       })
 
       it("can update existing food", function(done){
+        var myRequest = this.request
         var food = {name: "cheese pizza"}
+        Foods.find(1).then(function(data){
+          var food2 = data.rows[0]
+          // console.log(food2);
+          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+            if (error) {done(error)}
 
-        this.request.put("api/v1/foods/1", {form: food}, function(error, response){
-          if (error) {done(error)}
-          console.log("THIS IS A LOG");
-          // var parsedFood = JSON.parse(response.body)
-          // assert.equal(response.statusCode, 202)
-          // assert.equal(parsedFood.name, food.name)
-          done()
+            // var parsedFood = JSON.parse(response.body)
+            assert.equal(response.statusCode, 202)
+            Foods.find(1).then(function(data){
+              var newFood2 = data.rows[0]
+              // console.log(newFood2);
+              assert.equal(food.name, newFood2.name)
+              done()
+            })
+          })
         })
       })
     })
