@@ -4,6 +4,7 @@ var app = require('../server')
 var request = require('request')
 var Foods = require('../lib/models/food')
 var Meals = require('../lib/models/meal')
+var MealFoods = require('../lib/models/mealFood')
 
 describe('Server', function(){
   before(function(done){
@@ -253,16 +254,18 @@ describe('Server', function(){
   describe("GET /meals", function(){
     this.timeout(1000000)
     beforeEach(function(done){
-      Meals.createMeals("breakfast", 300).then(function () {
+      Meals.createMeals("breakfast", 300).then(function() {
         Foods.createFoods("apple", 50).then(function(){
-          Meals.addFood(1, 1).then(function(){ done() })
+          Meals.addFood(1, 1).then(function() { done()})
         })
-      });
+      })
     })
 
     afterEach(function(done){
-      Meals.resetMeals().then(function(){
-        Foods.resetFoods().then(function() { done() })
+      Foods.resetFoods().then(function(){
+        Meals.resetMeals().then(function() {
+          MealFoods.resetMealFoods().then(function() { done()})
+        })
       })
     })
 
@@ -270,10 +273,12 @@ describe('Server', function(){
       this.request.get('/api/v1/meals', function(error, response){
         if(error) {done(error)}
         var parsedMeals = JSON.parse(response.body)
+
         // eval(pry.it)
         assert.equal(response.statusCode, 200)
         assert.equal(parsedMeals.name, "breakfast")
         assert.equal(parsedMeals.total_calories, 300)
+        // assert.equal(parsedMeals.foods.count, 1)
         done()
       })
     })

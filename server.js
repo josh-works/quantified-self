@@ -71,9 +71,10 @@ app.put('/api/v1/foods/:id', function (request, response){
       })
     })
   })
+
   // GET meals
-  app.get('/api/v1/meals', function (request, response){
-    Meals.findAll().then(function(data){
+  app.get('/api/v1/meals', function(request, response){
+    Meals.findAll().then(function (data){
       var meals = data.rows
       meals.forEach(function(meal){
         // eval(pry.it)
