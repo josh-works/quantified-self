@@ -2,6 +2,7 @@ var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
 var Foods = require('./lib/models/food')
+var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
 
 app.set('port', process.env.PORT || 3000)
@@ -59,7 +60,7 @@ app.put('/api/v1/foods/:id', function (request, response){
       return response.sendStatus(202)
     })
   })
-
+  // DELETE foods
   app.delete('/api/v1/foods/:id', function (request, response){
     var id = request.params.id
 
@@ -68,6 +69,12 @@ app.put('/api/v1/foods/:id', function (request, response){
       Foods.destroy(id).then(function(data){
         return response.sendStatus(200)
       })
+    })
+  })
+  // GET meals
+  app.get('/api/v1/meals', function (request, response){
+    Meals.findAll().then(function(data){
+      response.json(data.rows)
     })
   })
 

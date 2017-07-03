@@ -3,7 +3,7 @@ var assert = require('chai').assert
 var app = require('../server')
 var request = require('request')
 var Foods = require('../lib/models/food')
-
+var Meals = require('../lib/models/meal')
 
 describe('Server', function(){
   before(function(done){
@@ -249,5 +249,29 @@ describe('Server', function(){
       })
 
   })
+  // meals
+  describe("GET /meals", function(){
+    // this.timeout(1000000)
+    beforeEach(function(done){
+      Meals.createMeals("breakfast", 300).then(function () { done() });
+    })
+
+    afterEach(function(done){
+      Meals.resetMeals().then(function () { done() })
+    })
+
+    it("should return a list of meals", function(done){
+      this.request.get('/api/v1/meals', function(error, response){
+        if(error) {done(error)}
+
+        var parsedMeals = JSON.parse(response.body)
+        assert.equal(response.statusCode, 200)
+        assert.equal(parsedMeals[0].name, "breakfast")
+        assert.equal(parsedMeals[0].total_calories, 300)
+        done()
+      })
+    })
+  })
+
 
 })
