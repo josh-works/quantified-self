@@ -251,23 +251,29 @@ describe('Server', function(){
   })
   // meals
   describe("GET /meals", function(){
-    // this.timeout(1000000)
+    this.timeout(1000000)
     beforeEach(function(done){
-      Meals.createMeals("breakfast", 300).then(function () { done() });
+      Meals.createMeals("breakfast", 300).then(function () {
+        Foods.createFoods("apple", 50).then(function(){
+          Meals.addFood(1, 1).then(function(){ done() })
+        })
+      });
     })
 
     afterEach(function(done){
-      Meals.resetMeals().then(function () { done() })
+      Meals.resetMeals().then(function(){
+        Foods.resetFoods().then(function() { done() })
+      })
     })
 
     it("should return a list of meals", function(done){
       this.request.get('/api/v1/meals', function(error, response){
         if(error) {done(error)}
-
         var parsedMeals = JSON.parse(response.body)
+        // eval(pry.it)
         assert.equal(response.statusCode, 200)
-        assert.equal(parsedMeals[0].name, "breakfast")
-        assert.equal(parsedMeals[0].total_calories, 300)
+        assert.equal(parsedMeals.name, "breakfast")
+        assert.equal(parsedMeals.total_calories, 300)
         done()
       })
     })
