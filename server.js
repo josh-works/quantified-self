@@ -60,6 +60,7 @@ app.put('/api/v1/foods/:id', function (request, response){
       return response.sendStatus(202)
     })
   })
+})
   // DELETE foods
   app.delete('/api/v1/foods/:id', function (request, response){
     var id = request.params.id
@@ -88,7 +89,6 @@ app.put('/api/v1/foods/:id', function (request, response){
     })
   })
 
-})
 
 if(!module.parent) {
   app.listen(app.get('port'), function() {
