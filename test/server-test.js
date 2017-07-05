@@ -251,7 +251,7 @@ describe('Server', function(){
 
   })
   // meals
-  describe("GET /meals", function(){
+  describe("GET /:meal", function(){
     this.timeout(1000000)
     beforeEach(function(done){
       Meals.createMeals("breakfast", 300).then(function() {
@@ -274,36 +274,51 @@ describe('Server', function(){
     })
 
     it("should return a single meal", function(done){
-      this.request.get('/api/v1/meals', function(error, response){
+      this.request.get('/api/v1/breakfast', function(error, response){
         if(error) {done(error)}
         var parsedMeals = JSON.parse(response.body)
 
         assert.equal(response.statusCode, 200)
-        assert.equal(parsedMeals[0].name, "breakfast")
-        assert.equal(parsedMeals[0].total_calories, 300)
-        assert.equal(parsedMeals[0].foods.length, 2)
+        assert.equal(parsedMeals.length, 2)
         done()
       })
     })
 
-    it("should return several meals", function (done) {
-      const myRequest = this.request
-      Meals.createMeals("lunch", 500).then(function() {
-        Meals.addFood(2, 1).then(function () {
-          myRequest.get('/api/v1/meals', function(error, response){
-            if(error) {done(error)}
-            var parsedMeals = JSON.parse(response.body)
+  })
 
-            console.log(parsedMeals[0].name);
-            assert.equal(parsedMeals.length, 2)
-            assert.equal(parsedMeals[0].name, "breakfast")
-            assert.equal(parsedMeals[1].name, "lunch")
-
-            done()
-          })
+  describe("PUT /:meal", function(){
+    this.timeout(1000000)
+    beforeEach(function(done){
+      Meals.createMeals("breakfast", 300).then(function() {
+        Foods.createFoods("apple", 50).then(function(){
+          Foods.createFoods("banana", 500).then(function(){ done()})
         })
       })
     })
+
+    afterEach(function(done){
+      Foods.resetFoods().then(function(){
+        Meals.resetMeals().then(function() {
+          MealFoods.resetMealFoods().then(function() { done()})
+        })
+      })
+    })
+
+    it("should add a food to a single meal", function(done){
+      var myRequest = this.request
+      var food = {name: "banana"}
+      myRequest.put('/api/v1/breakfast', {form: food}, function(error, response){
+        if(error) {done(error)}
+
+        assert.equal(response.statusCode, 202)
+         Meals.foods("breakfast").then(function(data){
+          var breakfastFoods = data.rows
+          assert.equal(breakfastFoods.length, 1)
+          done()
+        })
+      })
+    })
+
   })
 
 

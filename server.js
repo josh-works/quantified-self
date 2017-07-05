@@ -21,9 +21,6 @@ app.get('/api/v1/foods', function(request, response) {
 app.post('/api/v1/foods', function(request, response) {
   var name = request.body.name
   var calories = request.body.calories
-  // eval(pry.it)
-  // console.log(name);
-  // console.log(calories);
 
   if (name && calories){
     Foods.createFoods(name, calories)
@@ -74,22 +71,26 @@ app.put('/api/v1/foods/:id', function (request, response){
   })
 
   // GET meals
-  app.get('/api/v1/meals', function(request, response){
-    Meals.findAll().then(function (data){
-      var meals = data.rows
-      var allMeals = []
-
-        meals.forEach(function(meal){
-          Meals.foods(meal.id).then(function(data){
-            allMeals.push({id: meal.id,
-                          name: meal.name,
-                          total_calories: meal.total_calories,
-                          foods: data.rows})
-          })
-          // console.log(allMeals);
-        })
-
+  app.get('/api/v1/:meal', function(request, response){
+    var meal_name = request.params.meal
+    Meals.foods(meal_name).then(function(data){
+      if (data.rowCount ==0) {return response.sendStatus(404)}
+      response.json(data.rows)
     })
+  })
+
+  app.put('/api/v1/:meal', function(request, response){
+    Meals.findByName(request.params.meal).then(function(data){
+      var mealId = data.rows[0].id
+      Foods.findByName(request.body.name).then(function(data){
+        var foodId = data.rows[0].id
+        Meals.addFood(mealId, foodId).then(function(data){
+          return response.sendStatus(202)
+        })
+      })
+    })
+
+
   })
 
 
