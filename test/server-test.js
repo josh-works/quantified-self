@@ -256,7 +256,11 @@ describe('Server', function(){
     beforeEach(function(done){
       Meals.createMeals("breakfast", 300).then(function() {
         Foods.createFoods("apple", 50).then(function(){
-          Meals.addFood(1, 1).then(function() { done()})
+          Foods.createFoods("banana", 500).then(function(){
+            Meals.addFood(1, 1).then(function() {
+              Meals.addFood(1, 2).then(function() { done()})
+            })
+          })
         })
       })
     })
@@ -269,17 +273,35 @@ describe('Server', function(){
       })
     })
 
-    it("should return a list of meals", function(done){
+    it("should return a single meal", function(done){
       this.request.get('/api/v1/meals', function(error, response){
         if(error) {done(error)}
         var parsedMeals = JSON.parse(response.body)
 
-        // eval(pry.it)
         assert.equal(response.statusCode, 200)
-        assert.equal(parsedMeals.name, "breakfast")
-        assert.equal(parsedMeals.total_calories, 300)
-        // assert.equal(parsedMeals.foods.count, 1)
+        assert.equal(parsedMeals[0].name, "breakfast")
+        assert.equal(parsedMeals[0].total_calories, 300)
+        assert.equal(parsedMeals[0].foods.length, 2)
         done()
+      })
+    })
+
+    it("should return several meals", function (done) {
+      const myRequest = this.request
+      Meals.createMeals("lunch", 500).then(function() {
+        Meals.addFood(2, 1).then(function () {
+          myRequest.get('/api/v1/meals', function(error, response){
+            if(error) {done(error)}
+            var parsedMeals = JSON.parse(response.body)
+
+            console.log(parsedMeals[0].name);
+            assert.equal(parsedMeals.length, 2)
+            assert.equal(parsedMeals[0].name, "breakfast")
+            assert.equal(parsedMeals[1].name, "lunch")
+
+            done()
+          })
+        })
       })
     })
   })

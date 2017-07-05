@@ -77,15 +77,18 @@ app.put('/api/v1/foods/:id', function (request, response){
   app.get('/api/v1/meals', function(request, response){
     Meals.findAll().then(function (data){
       var meals = data.rows
-      meals.forEach(function(meal){
-        // eval(pry.it)
-        Meals.foods(meal.id).then(function(data){
-          response.json({id: meal.id,
-                        name: meal.name,
-                        total_calories: meal.total_calories,
-                        foods: data.rows})
+      var allMeals = []
+
+        meals.forEach(function(meal){
+          Meals.foods(meal.id).then(function(data){
+            allMeals.push({id: meal.id,
+                          name: meal.name,
+                          total_calories: meal.total_calories,
+                          foods: data.rows})
+          })
+          // console.log(allMeals);
         })
-      })
+
     })
   })
 
