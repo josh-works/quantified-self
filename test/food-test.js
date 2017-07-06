@@ -25,7 +25,11 @@ describe('Foods', function(){
     describe('GET /foods', function () {
 
       beforeEach(function(done){
-        Foods.createFoods("pizza", 155).then(function () { done() });
+        Foods.createFoods("pizza", 155).then(function(){
+          Foods.createFoods("pickle", 200).then(function(){
+            Foods.setInactive(2).then(function () { done() })
+          })
+        });
       })
 
       afterEach(function(done){
@@ -40,6 +44,7 @@ describe('Foods', function(){
           assert.equal(response.statusCode, 200)
           assert.include(parsedFood[0].name, "pizza")
           assert.equal(parsedFood.length, 1)
+          assert.notInclude(parsedFood[0].name, "pickle")
           done()
         })
       })
