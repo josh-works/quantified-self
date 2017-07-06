@@ -25,7 +25,11 @@ describe('Foods', function(){
     describe('GET /foods', function () {
 
       beforeEach(function(done){
-        Foods.createFoods("pizza", 155).then(function () { done() });
+        Foods.createFoods("pizza", 155).then(function(){
+          Foods.createFoods("pickle", 200).then(function(){
+            Foods.setInactive(2).then(function () { done() })
+          })
+        });
       })
 
       afterEach(function(done){
@@ -40,6 +44,7 @@ describe('Foods', function(){
           assert.equal(response.statusCode, 200)
           assert.include(parsedFood[0].name, "pizza")
           assert.equal(parsedFood.length, 1)
+          assert.notInclude(parsedFood[0].name, "pickle")
           done()
         })
       })
@@ -145,7 +150,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
@@ -166,7 +171,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
@@ -187,7 +192,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
@@ -205,7 +210,6 @@ describe('Foods', function(){
     })
   })
   describe("DELETE /foods/:id", function(){
-    // this.timeout(1000000)
     beforeEach(function(done){
       Foods.createFoods("pizza", 155).then(function () { done() });
     })
@@ -219,6 +223,26 @@ describe('Foods', function(){
         if(error){done(error)}
         assert.equal(response.statusCode, 404)
         done()
+      })
+    })
+
+  it("should set the food inactive", function(done){
+    var myRequest = this.request
+      Foods.findAll().then(function(data){
+        var countBefore = data.rowCount
+
+        myRequest.delete('/api/v1/foods/1', function(error, response){
+          if(error){done(error)}
+
+          assert.equal(response.statusCode, 200)
+
+          Foods.findAll().then(function(data){
+            var countAfter = data.rowCount
+
+            assert.equal(countAfter, 0)
+            done()
+          })
+        })
       })
     })
   })

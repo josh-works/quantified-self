@@ -2,9 +2,6 @@ var pry = require('pryjs')
 var assert = require('chai').assert
 var app = require('../server')
 var request = require('request')
-var Foods = require('../lib/models/food')
-var Meals = require('../lib/models/meal')
-var MealFoods = require('../lib/models/mealFood')
 
 describe('Server', function(){
   before(function(done){

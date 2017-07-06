@@ -64,7 +64,7 @@ app.put('/api/v1/foods/:id', function (request, response){
 
     Foods.find(id).then(function(data){
       if (data.rowCount ==0) {return response.sendStatus(404)}
-      Foods.destroy(id).then(function(data){
+      Foods.setInactive(id).then(function(data){
         return response.sendStatus(200)
       })
     })
@@ -89,8 +89,18 @@ app.put('/api/v1/foods/:id', function (request, response){
         })
       })
     })
+  })
 
+  app.delete('/api/v1/:meal', function (request, response) {
+    var foodId = request.query.id
+    Meals.findByName(request.params.meal).then(function (data) {
+      if (data.rowCount ==0) {return response.sendStatus(404)}
 
+      var mealId = data.rows[0].id
+      Meals.deleteFood(mealId, foodId).then(function (data) {
+        return response.sendStatus(202)
+      })
+    })
   })
 
 

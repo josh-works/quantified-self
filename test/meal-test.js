@@ -1,3 +1,4 @@
+var pry = require('pryjs')
 var Foods = require('../lib/models/food')
 var app = require('../server')
 var request = require('request')
@@ -24,7 +25,6 @@ describe('Meals', function(){
   })
 
   describe("GET /:meal", function(){
-    this.timeout(1000000)
     beforeEach(function(done){
       Meals.createMeals("breakfast", 300).then(function() {
         Foods.createFoods("apple", 50).then(function(){
@@ -59,7 +59,6 @@ describe('Meals', function(){
   })
 
   describe("PUT /:meal", function(){
-    this.timeout(1000000)
     beforeEach(function(done){
       Meals.createMeals("breakfast", 300).then(function() {
         Foods.createFoods("apple", 50).then(function(){
@@ -90,6 +89,47 @@ describe('Meals', function(){
         })
       })
     })
-
   })
+
+
+  describe('DELETE /:meal', function(){
+    beforeEach(function(done){
+      Meals.createMeals("breakfast", 300).then(function() {
+        Foods.createFoods("apple", 50).then(function(){
+          Foods.createFoods("banana", 500).then(function(){
+            Meals.addFood(1, 1).then(function() {
+              Meals.addFood(1, 2).then(function() { done()})
+            })
+          })
+        })
+      })
+    })
+
+    afterEach(function(done){
+      Foods.resetFoods().then(function(){
+        Meals.resetMeals().then(function() {
+          MealFoods.resetMealFoods().then(function() { done()})
+        })
+      })
+    })
+
+    it('should remove food from given meal', function (done) {
+      var myRequest = this.request
+      Meals.foods("breakfast").then(function (data) {
+        var count = data.rowCount
+
+        myRequest.delete('/api/v1/breakfast?id=1', function(error, response) {
+          if (error) {done(error)}
+          Meals.foods("breakfast").then(function (data) {
+            var newCount = data.rowCount
+            assert.equal(newCount, 1)
+            assert.equal(count, 2)
+            done()
+          })
+        })
+      })
+    })
+  })
+
+
 })
