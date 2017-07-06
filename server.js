@@ -64,7 +64,7 @@ app.put('/api/v1/foods/:id', function (request, response){
 
     Foods.find(id).then(function(data){
       if (data.rowCount ==0) {return response.sendStatus(404)}
-      Foods.destroy(id).then(function(data){
+      Foods.setInactive(id).then(function(data){
         return response.sendStatus(200)
       })
     })

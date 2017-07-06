@@ -226,7 +226,7 @@ describe('Foods', function(){
       })
     })
 
-  it("should delete the food from the database", function(done){
+  it("should set the food inactive", function(done){
     var myRequest = this.request
       Foods.findAll().then(function(data){
         var countBefore = data.rowCount
