@@ -210,7 +210,6 @@ describe('Foods', function(){
     })
   })
   describe("DELETE /foods/:id", function(){
-    // this.timeout(1000000)
     beforeEach(function(done){
       Foods.createFoods("pizza", 155).then(function () { done() });
     })
@@ -224,6 +223,26 @@ describe('Foods', function(){
         if(error){done(error)}
         assert.equal(response.statusCode, 404)
         done()
+      })
+    })
+
+  it("should delete the food from the database", function(done){
+    var myRequest = this.request
+      Foods.findAll().then(function(data){
+        var countBefore = data.rowCount
+
+        myRequest.delete('/api/v1/foods/1', function(error, response){
+          if(error){done(error)}
+
+          assert.equal(response.statusCode, 200)
+
+          Foods.findAll().then(function(data){
+            var countAfter = data.rowCount
+
+            assert.equal(countAfter, 0)
+            done()
+          })
+        })
       })
     })
   })
