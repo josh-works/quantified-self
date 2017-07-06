@@ -150,7 +150,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
@@ -171,7 +171,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
@@ -192,7 +192,7 @@ describe('Foods', function(){
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
           // console.log(food2);
-          myRequest.put("api/v1/foods/1", {form: food}, function(error, response){
+          myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
             // var parsedFood = JSON.parse(response.body)
