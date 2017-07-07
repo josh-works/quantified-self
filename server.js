@@ -1,10 +1,12 @@
 var express = require('express')
+var cors = require('cors')
 var app = express()
 var bodyParser = require('body-parser')
 var Foods = require('./lib/models/food')
 var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
 
+app.use(cors())
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Quantified Self'
 
@@ -23,12 +25,13 @@ app.post('/api/v1/foods', function(request, response) {
   var calories = request.body.calories
 
   if (name && calories){
-    Foods.createFoods(name, calories)
+    return Foods.createFoods(name, calories)
     .then(function(data){
-      response.status(201).json({
-            status: 'success',
-            message: 'Inserted one food'
-          })
+      response.status(201).json(data.rows[0])
+      // json({
+      //       status: 'success',
+      //       message: 'Inserted one food'
+      //     })
     })
   }else {
     return response.status(422).json({error: "You must have both name and calories"})
