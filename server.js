@@ -4,6 +4,10 @@ var bodyParser = require('body-parser')
 var Foods = require('./lib/models/food')
 var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
+var cors = require('cors')
+
+app.use(cors())
+
 
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Quantified Self'
