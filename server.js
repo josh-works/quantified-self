@@ -8,9 +8,6 @@ var pry = require('pryjs')
 var cors = require('cors')
 
 app.use(cors())
-
-
-app.use(cors())
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Quantified Self'
 
@@ -56,7 +53,7 @@ app.get('/api/v1/foods/:id', function (request, response) {
 app.put('/api/v1/foods/:id', function (request, response){
   var id = request.params.id
   var name = request.body.name
-  var calories = request.body.calories
+  var calories = Number(request.body.calories)
   // var calories = request.body.calories
   Foods.find(id).then(function(data){
     if (data.rowCount == 0) {return response.sendStatus(404)}
