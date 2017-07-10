@@ -6,9 +6,9 @@ var Foods = require('./lib/models/food')
 var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
 var cors = require('cors')
-
+var port = process.env.PORT || 3000
 app.use(cors())
-app.set('port', process.env.PORT || 3000)
+app.set('port', port)
 app.locals.title = 'Quantified Self'
 
 app.use(bodyParser.json())
@@ -109,8 +109,8 @@ app.put('/api/v1/foods/:id', function (request, response){
 
 
 if(!module.parent) {
-  app.listen(app.get('port'), function() {
-    console.log(`${app.locals.title} is running on ${app.get('port')}.`)
+  app.listen(port, function() {
+    console.log(`${app.locals.title} is running on ${port}.`)
   })
 }
 
