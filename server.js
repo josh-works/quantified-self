@@ -7,6 +7,7 @@ var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
 var cors = require('cors')
 var port = process.env.PORT || 3000
+
 app.use(cors())
 app.set('port', port)
 app.locals.title = 'Quantified Self'
