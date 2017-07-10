@@ -2,7 +2,7 @@ var Foods = require('../lib/models/food')
 var app = require('../server')
 var request = require('request')
 var assert = require('chai').assert
-
+var pry = require('pryjs')
 
 
 describe('Foods', function(){
@@ -90,7 +90,7 @@ describe('Foods', function(){
     })
 
     describe("POST /foods", function(){
-
+      this.timeout(100000)
       beforeEach(function(done){
         Foods.createFoods("pizza", 155).then(function () { done() });
       })
@@ -107,8 +107,8 @@ describe('Foods', function(){
           var parsedFood = JSON.parse(response.body)
           assert.equal(response.statusCode, 201)
           // assert.equal(Foods.countFoods(), 2)
-          assert.equal(parsedFood.status, "success")
-          assert.equal(parsedFood.message, 'Inserted one food')
+          assert.equal(parsedFood.name, "banana")
+          assert.equal(parsedFood.calories, '50')
           done()
         })
       })
