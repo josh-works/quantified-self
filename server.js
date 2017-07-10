@@ -6,14 +6,18 @@ var Foods = require('./lib/models/food')
 var Meals = require('./lib/models/meal')
 var pry = require('pryjs')
 var cors = require('cors')
-var port = process.env.PORT || 3000
+
 
 app.use(cors())
-app.set('port', port)
+app.set('port', process.env.PORT || 3000);
 app.locals.title = 'Quantified Self'
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.get('/', function(request, response) {
+  response.send('Welcome to the Quantified Self API')
+})
 
 //GET foods
 app.get('/api/v1/foods', function(request, response) {
@@ -110,8 +114,8 @@ app.put('/api/v1/foods/:id', function (request, response){
 
 
 if(!module.parent) {
-  app.listen(port, function() {
-    console.log(`${app.locals.title} is running on ${port}.`)
+  app.listen(app.get('port'), function() {
+    console.log(`${app.locals.title} is running.`)
   })
 }
 
