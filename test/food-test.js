@@ -2,7 +2,7 @@ var Foods = require('../lib/models/food')
 var app = require('../server')
 var request = require('request')
 var assert = require('chai').assert
-var pry = require('pryjs')
+
 
 
 describe('Foods', function(){

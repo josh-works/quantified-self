@@ -1,4 +1,3 @@
-var pry = require('pryjs')
 var Foods = require('../lib/models/food')
 var app = require('../server')
 var request = require('request')

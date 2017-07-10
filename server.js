@@ -4,7 +4,6 @@ var app = express()
 var bodyParser = require('body-parser')
 var Foods = require('./lib/models/food')
 var Meals = require('./lib/models/meal')
-var pry = require('pryjs')
 var cors = require('cors')
 
 

@@ -1,4 +1,3 @@
-var pry = require('pryjs')
 var assert = require('chai').assert
 var app = require('../server')
 var request = require('request')
