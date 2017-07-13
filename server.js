@@ -101,12 +101,10 @@ app.put('/api/v1/foods/:id', function (request, response){
 
   app.delete('/api/v1/:meal', function (request, response) {
     var foodId = Number(request.body.id)
-    console.log(foodId);
     Meals.findByName(request.params.meal).then(function (data) {
       if (data.rowCount ==0) {return response.sendStatus(404)}
 
       var mealId = Number(data.rows[0].id)
-      console.log(mealId);
       Meals.deleteFood(mealId, foodId).then(function (data) {
         return response.sendStatus(202)
       })

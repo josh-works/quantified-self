@@ -116,8 +116,9 @@ describe('Meals', function(){
       var myRequest = this.request
       Meals.foods("breakfast").then(function (data) {
         var count = data.rowCount
+        var foodId = {id: 1}
 
-        myRequest.delete('/api/v1/breakfast?id=1', function(error, response) {
+        myRequest.delete('/api/v1/breakfast', {form: foodId}, function(error, response) {
           if (error) {done(error)}
           Meals.foods("breakfast").then(function (data) {
             var newCount = data.rowCount
@@ -129,6 +130,4 @@ describe('Meals', function(){
       })
     })
   })
-
-
 })
