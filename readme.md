@@ -10,7 +10,7 @@ Front-end available live at
 
 This is the API endpoints for the backend of this quantified self application.
 
-The backend is live on Heroku: https://quantified-self-backend.herokuapp.com/api/v1
+The backend is live on Heroku: https://quantified-self-backend.herokuapp.com/
 
 View the repo: https://github.com/caward12/quantified-self
 
