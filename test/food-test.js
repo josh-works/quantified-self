@@ -102,11 +102,9 @@ describe('Foods', function(){
       it("can create a new food object with properties", function(done){
         var food = {name: "banana", calories: 50}
         this.request.post('/api/v1/foods', {form: food}, function(error, response){
-          // console.log(response.body)
           if(error) {done(error)}
           var parsedFood = JSON.parse(response.body)
           assert.equal(response.statusCode, 201)
-          // assert.equal(Foods.countFoods(), 2)
           assert.equal(parsedFood.name, "banana")
           assert.equal(parsedFood.calories, '50')
           done()
@@ -149,15 +147,12 @@ describe('Foods', function(){
         var food = {name: "cheese pizza"}
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
-          // console.log(food2);
           myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
-            // var parsedFood = JSON.parse(response.body)
             assert.equal(response.statusCode, 202)
             Foods.find(1).then(function(data){
               var newFood2 = data.rows[0]
-              // console.log(newFood2);
               assert.equal(food.name, newFood2.name)
               done()
             })
@@ -170,15 +165,12 @@ describe('Foods', function(){
         var food = {calories: "400"}
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
-          // console.log(food2);
           myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
-            // var parsedFood = JSON.parse(response.body)
             assert.equal(response.statusCode, 202)
             Foods.find(1).then(function(data){
               var newFood2 = data.rows[0]
-              // console.log(newFood2);
               assert.equal(food.calories, newFood2.calories)
               done()
             })
@@ -191,15 +183,12 @@ describe('Foods', function(){
         var food = {name: "cheese pizza", calories: 300}
         Foods.find(1).then(function(data){
           var food2 = data.rows[0]
-          // console.log(food2);
           myRequest.put("/api/v1/foods/1", {form: food}, function(error, response){
             if (error) {done(error)}
 
-            // var parsedFood = JSON.parse(response.body)
             assert.equal(response.statusCode, 202)
             Foods.find(1).then(function(data){
               var newFood2 = data.rows[0]
-              // console.log(newFood2);
               assert.equal(food.name, newFood2.name)
               assert.equal(food.calories, newFood2.calories)
               done()
